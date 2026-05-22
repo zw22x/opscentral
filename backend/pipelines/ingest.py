@@ -3,7 +3,7 @@ from models.entities import Entity, Source, IngestionJob, EntityType
 from datetime import datetime, timezone
 import uuid
 
-def get_or_create_source(db: Session, name: str, source_type: str, base_url: str, str = None): -> Source:
+def get_or_create_source(db: Session, name: str, source_type: str, base_url: str = None) -> Source:
     source = db.query(Source).filter(Source.name == name).first()
     if not source:
         source = Source(
@@ -32,8 +32,8 @@ def run_ingestion_job(db: Session, source_id: uuid.UUID, records: list[dict], en
             entity = Entity(
                 name=record["name"],
                 entity_type=entity_type,
-                desciption=record.get("description", ""),
-                metadata_=record.get("metadata", {})
+                description=record.get("description", ""),
+                metadata_=record.get("meta", {})
             )
             db.add(entity)
             count += 1
@@ -48,6 +48,7 @@ def run_ingestion_job(db: Session, source_id: uuid.UUID, records: list[dict], en
         job.status = "failed"
         job.error_message = str(e)
         job.finished_at = datetime.now(timezone.utc)
+        print(f"Ingest job failed: {e}")
     
     db.commit()
     db.refresh(job)

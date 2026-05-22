@@ -67,7 +67,7 @@ def list_entities(
                 "name": e.name,
                 "entity_type": e.entity_type,
                 "description": e.description,
-                "metadata": e.metadata_,
+                "meta": e.metadata_,
                 "created_at": e.created_at.isoformat(),
             }
             for e in entities
@@ -95,7 +95,7 @@ def get_entity(entity_id: str, db: Session = Depends(get_db)):
         "name": entity.name,
         "entity_type": entity.entity_type,
         "description": entity.description,
-        "metadata": entity.metadata_,
+        "meta": entity.metadata_,
         "created_at": entity.created_at.isoformat(),
         "alerts": alerts
     }
