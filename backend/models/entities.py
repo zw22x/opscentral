@@ -23,11 +23,11 @@ class AlertSeverity(str, enum.Enum):
 class Entity(Base):
     __tablename__ = "entities"
 
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid64)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     name = Column(String(255), nullable=False)
     entity_type = Column(Enum(EntityType), nullable=False)
     description = Column(Text)
-    metadata = Column("metadata", JSON, default=dict)
+    metadata_ = Column("metadata", JSON, default=dict)
     created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
     updated_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
@@ -67,7 +67,7 @@ class Alert(Base):
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     entity_id = Column(UUID(as_uuid=True), ForeignKey("entities.id"), nullable=False)
-    severity = Column(Enum(AlertSeverity), nullable=False))
+    severity = Column(Enum(AlertSeverity), nullable=False)
     title = Column(String(255), nullable=False)
     description = Column(Text)
     resolved = Column(String(5), default="false")
@@ -82,7 +82,7 @@ class EntityRelationship(Base):
     from_entity_id = Column(UUID(as_uuid=True), ForeignKey("entities.id"), nullable=False)
     to_entity_id = Column(UUID(as_uuid=True), ForeignKey("entities.id"), nullable=False)
     relationship_type = Column(String(100), nullable=False)
-    metadata = Column(JSON, default=dict)
+    metadata_ = Column(JSON, default=dict)
     created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
     from_entity = relationship("Entity", foreign_keys=[from_entity_id], back_populates="relationships_from")
@@ -100,4 +100,4 @@ class EntitySource(Base):
 
     entity = relationship("Entity", back_populates="source_links")
     source = relationship("Source", back_populates="entity_links")
-    
+
