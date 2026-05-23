@@ -1,53 +1,144 @@
-# Palantir-Style Intelligence Platform (Learning Build)
+# OpsCentral
 
-This repository is a guided, production-style project to help you learn how real data platforms are built.
+A Palantir-style data intelligence platform for tracking entities, ingesting multi-source data, and surfacing alerts. Built as a portfolio project targeting defense, fintech, and enterprise data roles.
 
-## What We Are Building
+![OpsCentral Dashboard](docs/screenshot.png)
 
-An operational intelligence platform with:
+## Stack
 
-- Multi-source data ingestion
-- Entity and relationship modeling
-- Search and investigation workflows
-- Governance (auth, permissions, audit trails)
-- Production-grade deployment and observability
+| Layer | Technology |
+|---|---|
+| Frontend | Next.js 15, TypeScript, Tailwind CSS |
+| Backend | FastAPI, Python 3.12 |
+| Database | PostgreSQL 15 |
+| ORM | SQLAlchemy + Alembic |
+| Infrastructure | Docker, docker-compose |
 
-## Monorepo Structure
+## Features
 
-```text
-apps/
-  api/        FastAPI service (data access, APIs, business logic)
-  web/        Next.js app (investigation and analytics UI)
-docs/         Study path, architecture, exercises
-infra/        Local infrastructure (Postgres, Redis, etc.)
+- **Entity tracking** — monitor companies, persons, vessels, aircraft, and IP addresses across multiple data sources
+- **Multi-source ingestion** — ingest records from any source via a single REST endpoint with full job logging
+- **Alert system** — create and track alerts on entities with severity levels (low / medium / high / critical)
+- **Live search and filtering** — search entities by name, filter by type, with server-side pagination
+- **Ingestion job history** — full audit log of every ingest run with status, record count, and duration
+- **Entity detail panel** — click any entity to see full metadata, source info, and active alerts
+
+## Architecture
+┌─────────────────┐     HTTP      ┌──────────────────┐     SQL      ┌──────────────┐
+│   Next.js 15    │ ────────────► │    FastAPI        │ ──────────► │  PostgreSQL  │
+│   (port 3000)   │               │    (port 8000)    │             │  (port 5433) │
+└─────────────────┘               └──────────────────┘             └──────────────┘
+│
+┌──────┴───────┐
+│   Alembic    │
+│  migrations  │
+└──────────────┘
+
+## Data Model
+
+- **entities** — core tracked objects with type, description, and JSON metadata
+- **sources** — registered data sources (SEC EDGAR, OFAC, OpenSky, AIS, etc.)
+- **ingestion_jobs** — audit log of every ingest run
+- **alerts** — flagged conditions on entities with severity levels
+- **entity_relationships** — directed links between entities
+- **entity_sources** — junction table linking entities to their originating sources
+
+## API Reference
+
+| Method | Endpoint | Description |
+|---|---|---|
+| GET | `/health` | Health check |
+| GET | `/entities` | List entities with search, filter, pagination |
+| GET | `/entities/{id}` | Get single entity with alerts |
+| POST | `/ingest` | Ingest a batch of records from a named source |
+| GET | `/jobs` | List last 20 ingestion jobs |
+| GET | `/sources` | List all registered sources |
+| POST | `/alerts` | Create an alert on an entity |
+
+Interactive API docs available at `http://localhost:8000/docs` when running locally.
+
+## Running Locally
+
+### Prerequisites
+- Docker Desktop
+- Python 3.12
+- Node.js 18+
+
+### Setup
+
+**1. Clone the repo**
+```bash
+git clone https://github.com/YOUR_USERNAME/opscentral.git
+cd opscentral
 ```
 
-## Phase Plan
+**2. Start the database**
+```bash
+docker compose up postgres -d
+```
 
-1. Phase 1: Foundation (health checks, entity APIs, basic UI)
-2. Phase 2: Real persistence + pipeline orchestration
-3. Phase 3: Investigation workflows + alerts
-4. Phase 4: Production hardening (CI/CD, observability, security)
+**3. Set up the backend**
+```bash
+cd backend
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python3 -m alembic upgrade head
+python3 -m uvicorn connector-service.main:app --reload --port 8000
+```
 
-## Getting Started (Local)
+**4. Start the frontend**
+```bash
+cd frontend
+npm install
+npm run dev
+```
 
-1. Start local infra:
-   - `docker compose -f infra/docker-compose.yml up -d`
-2. Start API:
-   - `cd apps/api`
-   - `python -m venv .venv && source .venv/bin/activate`
-   - `pip install -e ".[dev]"`
-   - `uvicorn app.main:app --reload --port 8000`
-3. Start web:
-   - `cd apps/web`
-   - `npm install`
-   - `npm run dev`
+**5. Open the dashboard**
 
-## What To Study First
+Navigate to `http://localhost:3000`
 
-Read in this order:
+### Seed sample data
 
-1. `docs/study-plan.md`
-2. `docs/architecture.md`
-3. `docs/phase-1-exercises.md`
+```bash
+curl -X POST http://localhost:8000/ingest \
+  -H "Content-Type: application/json" \
+  -d '{
+    "source_name": "SEC EDGAR",
+    "source_type": "api",
+    "entity_type": "company",
+    "records": [
+      {"name": "Lockheed Martin Corp", "description": "Defense and aerospace manufacturer", "meta": {"ticker": "LMT", "country": "US"}}
+    ]
+  }'
+```
 
+## Project Structure
+opscentral/
+├── docker-compose.yml
+├── backend/
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── alembic/              # database migrations
+│   ├── models/
+│   │   ├── base.py           # SQLAlchemy engine + session
+│   │   └── entities.py       # all table definitions
+│   ├── pipelines/
+│   │   └── ingest.py         # ingestion pipeline logic
+│   └── connector-service/
+│       └── main.py           # FastAPI routes
+└── frontend/
+├── app/
+│   ├── globals.css        # dark theme CSS variables
+│   ├── layout.tsx
+│   └── page.tsx           # main dashboard
+└── lib/
+└── api.ts             # typed API client
+
+## Roadmap
+
+- [ ] Neo4j graph layer for entity relationship visualization
+- [ ] WebSocket feed for real-time alert notifications
+- [ ] Authentication with JWT
+- [ ] Automated ingestion from live APIs (OpenSky, SEC EDGAR, OFAC)
+- [ ] Export to CSV / PDF reports
