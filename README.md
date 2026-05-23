@@ -24,15 +24,9 @@ A Palantir-style data intelligence platform for tracking entities, ingesting mul
 - **Entity detail panel** — click any entity to see full metadata, source info, and active alerts
 
 ## Architecture
-┌─────────────────┐     HTTP      ┌──────────────────┐     SQL      ┌──────────────┐
-│   Next.js 15    │ ────────────► │    FastAPI        │ ──────────► │  PostgreSQL  │
-│   (port 3000)   │               │    (port 8000)    │             │  (port 5433) │
-└─────────────────┘               └──────────────────┘             └──────────────┘
-│
-┌──────┴───────┐
-│   Alembic    │
-│  migrations  │
-└──────────────┘
+**Frontend** (Next.js 15, port 3000) → HTTP → **Backend** (FastAPI, port 8000) → SQL → **Database** (PostgreSQL, port 5433)
+
+Database migrations managed by **Alembic**.
 
 ## Data Model
 
