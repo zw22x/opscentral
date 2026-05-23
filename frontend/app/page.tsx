@@ -96,7 +96,7 @@ export default function Home() {
   const [selectedEntity, setSelectedEntity] = useState<Entity | null>(null);
   const [activeTab, setActiveTab] = useState<"entities" | "sources" | "jobs">("entities");
 
-  const loadEntities = useCallback(sync () => {
+  const loadEntities = useCallback(async () => {
     setLoading(true);
     try {
       const data = await fetchEntities({

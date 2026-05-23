@@ -48,25 +48,25 @@ export async function fetchEntities(params?: {
     if (params?.skip !== undefined) query.set("skip", String(params.skip));
     if (params?.limit !== undefined) query.set("limit", String(params.limit));
 
-    const res = await fetch('${API_BASE}/entities?${query}');
+    const res = await fetch(`${API_BASE}/entities?${query}`);
     if (!res.ok) throw new Error("Failed to fetch entities");
     return res.json();
 }
 
 export async function fetchEntity(id: string): Promise<Entity> {
-    const res = await fetch('${API_BASE}/entities/${id}');
+    const res = await fetch(`${API_BASE}/entities?/${id}`);
     if (!res.ok) throw new Error("Failed to fetch entity");
     return res.json();
 }
 
 export async function fetchSources(): Promise<Source[]> {
-    const res = await fetch('${API_BASE}/sources');
+    const res = await fetch(`${API_BASE}/sources`);
     if (!res.ok) throw new Error("Failed to fetch sources");
     return res.json();
 }
 
 export async function fetchJobs(): Promise<IngestionJob[]> {
-    const res = await fetch('${API_BASE}/jobs');
+    const res = await fetch(`${API_BASE}/jobs`);
     if (!res.ok) throw new Error("Failed to fetch jobs");
     return res.json();
 }
