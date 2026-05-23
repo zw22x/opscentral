@@ -123,8 +123,10 @@ export default function Home() {
     }, []);
 
     const handleEntityClick = async (entity: Entity) => {
+      setSelectedEntity(null);
       try {
         const full = await fetchEntity(entity.id);
+        console.log("entity detail:", JSON.stringify(full));
         setSelectedEntity(full);
       } catch (e) {
         console.error(e);
@@ -500,9 +502,9 @@ export default function Home() {
                 <div style={{ fontSize: 10, color: "var(--text-muted)", fontWeight: 600, letterSpacing: "0.08em", marginBottom: 8 }}>DETAILS</div>
                 <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                   {[
-                    { label: "Type", value: selectedEntity.entity_type },
-                    { label: "ID", value: selectedEntity.id.slice(0, 16) + "..." },
-                    { label: "Created", value: new Date(selectedEntity.created_at).toLocaleDateString() },
+                    { label: "Type", value: selectedEntity?.entity_type },
+                    { label: "ID", value: selectedEntity ? selectedEntity.id.slice(0, 16) + "..." : "" },
+                    { label: "Created", value: selectedEntity ? new Date(selectedEntity.created_at).toLocaleDateString() : "" },
                   ].map((row) => (
                     <div key={row.label} style={{ display: "flex", justifyContent: "space-between" }}>
                       <span style={{ fontSize: 12, color: "var(--text-muted)" }}>{row.label}</span>

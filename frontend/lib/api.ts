@@ -54,7 +54,8 @@ export async function fetchEntities(params?: {
 }
 
 export async function fetchEntity(id: string): Promise<Entity> {
-    const res = await fetch(`${API_BASE}/entities?/${id}`);
+    console.log("fetching entity at:", `${API_BASE}/entities/${id}`);
+    const res = await fetch(`${API_BASE}/entities/${id}`);
     if (!res.ok) throw new Error("Failed to fetch entity");
     return res.json();
 }
