@@ -62,7 +62,7 @@ Interactive API docs available at `http://localhost:8000/docs` when running loca
 
 **1. Clone the repo**
 ```bash
-git clone https://github.com/YOUR_USERNAME/opscentral.git
+git clone https://github.com/zw22x/opscentral.git
 cd opscentral
 ```
 
@@ -108,26 +108,28 @@ curl -X POST http://localhost:8000/ingest \
 ```
 
 ## Project Structure
+```
 opscentral/
 ├── docker-compose.yml
 ├── backend/
 │   ├── Dockerfile
 │   ├── requirements.txt
-│   ├── alembic/              # database migrations
+│   ├── alembic/                  # database migrations
 │   ├── models/
-│   │   ├── base.py           # SQLAlchemy engine + session
-│   │   └── entities.py       # all table definitions
+│   │   ├── base.py               # SQLAlchemy engine + session
+│   │   └── entities.py           # all table definitions
 │   ├── pipelines/
-│   │   └── ingest.py         # ingestion pipeline logic
+│   │   └── ingest.py             # ingestion pipeline logic
 │   └── connector-service/
-│       └── main.py           # FastAPI routes
+│       └── main.py               # FastAPI routes
 └── frontend/
-├── app/
-│   ├── globals.css        # dark theme CSS variables
-│   ├── layout.tsx
-│   └── page.tsx           # main dashboard
-└── lib/
-└── api.ts             # typed API client
+    ├── app/
+    │   ├── globals.css            # dark theme CSS variables
+    │   ├── layout.tsx
+    │   └── page.tsx               # main dashboard
+    └── lib/
+        └── api.ts                 # typed API client
+```
 
 ## Roadmap
 
