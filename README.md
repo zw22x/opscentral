@@ -1,6 +1,13 @@
 # OpsCentral
 
-A Palantir-style data intelligence platform for tracking entities, ingesting multi-source data, and surfacing alerts. Built as a portfolio project targeting defense, fintech, and enterprise data roles.
+A Palantir-style data intelligence platform for tracking entities, ingesting multi-source data, and surfacing alerts. Built as a portfolio project targeting defense, fintech, and enterprise data 
+roles.
+
+## Live Demo
+
+**[opscentral-nu.vercel.app](https://opscentral-nu.vercel.app)**
+
+> Frontend hosted on Vercel · Backend hosted on Railway · PostgreSQL on Railway
 
 ![OpsCentral Dashboard](docs/screenshot.png)
 
